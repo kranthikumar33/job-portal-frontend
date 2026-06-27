@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 
 const Signup = () => {
-  const { register } = useAuth();
+  const { register, login } = useAuth();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -20,25 +20,33 @@ const Signup = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-    try {
-      await register(
-        formData.fullname,
-        formData.email,
-        formData.phoneNumber,
-        formData.password,
-        formData.role
-      );
-      navigate("/login");
-    } catch (err) {
-      setError(err.response?.data?.message || "Registration failed. Please try again.");
-    } finally {
-      setLoading(false);
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError("");
+  setLoading(true);
+  try {
+    // first register
+    await register(
+      formData.fullname,
+      formData.email,
+      formData.phoneNumber,
+      formData.password,
+      formData.role
+    );
+    // then auto login
+    await login(formData.email, formData.password, formData.role);
+    // redirect based on role
+    if (formData.role === "recruiter") {
+      navigate("/recruiter/dashboard");
+    } else {
+      navigate("/student/dashboard");
     }
-  };
+  } catch (err) {
+    setError(err.response?.data?.message || "Registration failed. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
