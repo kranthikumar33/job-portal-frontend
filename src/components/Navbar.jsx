@@ -1,46 +1,64 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = async () => {
     await logout();
     navigate("/login");
   };
 
+  const isActive = (path) => location.pathname === path;
+
+  const linkClass = (path) =>
+    `hover:text-blue-600 transition-colors ${
+      isActive(path) ? "text-blue-600 font-semibold" : "text-gray-600"
+    }`;
+
   return (
     <nav className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between sticky top-0 z-50">
-      
+
       {/* Logo */}
       <Link to="/" className="text-xl font-bold text-blue-600 tracking-tight">
         Job<span className="text-gray-900">Portal</span>
       </Link>
 
       {/* Middle Links */}
-      <div className="flex items-center gap-6 text-sm font-medium text-gray-600">
+      <div className="flex items-center gap-6 text-sm font-medium">
+
+        {/* Guest */}
         {!user && (
           <>
-            <Link to="/" className="hover:text-blue-600 transition-colors">Home</Link>
-            <Link to="/jobs" className="hover:text-blue-600 transition-colors">Jobs</Link>
+            <Link to="/" className={linkClass("/")}>Home</Link>
+            <Link to="/jobs" className={linkClass("/jobs")}>Jobs</Link>
           </>
         )}
 
+        {/* Student */}
         {user?.role === "student" && (
           <>
-            <Link to="/" className="hover:text-blue-600 transition-colors">Home</Link>
-            <Link to="/jobs" className="hover:text-blue-600 transition-colors">Jobs</Link>
-            <Link to="/my-applications" className="hover:text-blue-600 transition-colors">My Applications</Link>
+            <Link to="/" className={linkClass("/")}>Home</Link>
+            <Link to="/jobs" className={linkClass("/jobs")}>Jobs</Link>
+            <Link to="/student/applications" className={linkClass("/student/applications")}>
+              My Applications
+            </Link>
           </>
         )}
 
+        {/* Recruiter */}
         {user?.role === "recruiter" && (
-  <>
-    <Link to="/recruiter/companies" className="hover:text-blue-600 transition-colors">Companies</Link>
-    <Link to="/recruiter/jobs" className="hover:text-blue-600 transition-colors">My Jobs</Link>
-  </>
-)}
+          <>
+            <Link to="/recruiter/companies" className={linkClass("/recruiter/companies")}>
+              Companies
+            </Link>
+            <Link to="/recruiter/jobs" className={linkClass("/recruiter/jobs")}>
+              My Jobs
+            </Link>
+          </>
+        )}
       </div>
 
       {/* Right Side */}
@@ -62,7 +80,7 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            {/* User info */}
+            {/* Avatar + name */}
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-sm">
                 {user.fullname?.charAt(0).toUpperCase()}
