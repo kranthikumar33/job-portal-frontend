@@ -57,7 +57,7 @@ const JobDetail = () => {
     setApplying(true);
     setError("");
     try {
-      await API.get(`/application/apply/${id}`);
+      await API.post(`/application/apply/${id}`);
       setApplied(true);
       showToast("Application submitted successfully! 🎉");
     } catch (err) {
