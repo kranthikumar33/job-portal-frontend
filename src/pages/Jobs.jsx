@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import API from "../api/axios";
 
+const JOBS_PER_PAGE = 6;
+
 const Jobs = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const [keyword, setKeyword] = useState(searchParams.get("keyword") || "");
   const [search, setSearch] = useState(searchParams.get("keyword") || "");
+  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,6 +19,7 @@ const Jobs = () => {
       try {
         const res = await API.get(`/job/get?keyword=${search}`);
         setJobs(res.data.jobs);
+        setCurrentPage(1); // reset to page 1 on new search
       } catch {
         setJobs([]);
       } finally {
@@ -30,6 +34,13 @@ const Jobs = () => {
     setSearch(keyword);
     setSearchParams(keyword ? { keyword } : {});
   };
+
+  // Pagination logic
+  const totalPages = Math.ceil(jobs.length / JOBS_PER_PAGE);
+  const paginatedJobs = jobs.slice(
+    (currentPage - 1) * JOBS_PER_PAGE,
+    currentPage * JOBS_PER_PAGE
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 px-6 py-8 max-w-6xl mx-auto">
@@ -99,9 +110,12 @@ const Jobs = () => {
       {/* Job Cards */}
       {!loading && jobs.length > 0 && (
         <>
-          <p className="text-xs text-gray-400 mb-4">{jobs.length} job{jobs.length !== 1 ? "s" : ""} found</p>
+          <p className="text-xs text-gray-400 mb-4">
+            {jobs.length} job{jobs.length !== 1 ? "s" : ""} found
+            {totalPages > 1 && ` · Page ${currentPage} of ${totalPages}`}
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {jobs.map((job) => (
+            {paginatedJobs.map((job) => (
               <div
                 key={job._id}
                 className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow cursor-pointer flex flex-col justify-between"
@@ -135,6 +149,41 @@ const Jobs = () => {
               </div>
             ))}
           </div>
+
+          {/* Pagination controls */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2 mt-10">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                disabled={currentPage === 1}
+                className="text-sm font-medium px-4 py-2 rounded-lg border border-gray-200 text-gray-500 hover:border-gray-400 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                ← Prev
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`text-sm font-medium w-9 h-9 rounded-lg border transition-colors ${
+                    page === currentPage
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "border-gray-200 text-gray-600 hover:border-blue-300 hover:text-blue-600"
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="text-sm font-medium px-4 py-2 rounded-lg border border-gray-200 text-gray-500 hover:border-gray-400 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                Next →
+              </button>
+            </div>
+          )}
         </>
       )}
     </div>

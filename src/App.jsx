@@ -14,6 +14,9 @@ import MyJobs from "./pages/recruiter/MyJobs";
 import Applicants from "./pages/recruiter/Applicants";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
+import Profile from "./pages/Profile";
+import NotFound from "./pages/NotFound";
+import EditCompany from "./pages/recruiter/EditCompany";
 
 const Layout = () => {
   const location = useLocation();
@@ -31,6 +34,14 @@ const Layout = () => {
         <Route path="/jobs/:id" element={<JobDetail />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<Terms />} />
+        <Route path="/recruiter/companies/edit/:id" element={<ProtectedRoute><EditCompany /></ProtectedRoute>} />
+        <Route path="/profile" element={
+    <ProtectedRoute>
+      <Profile />
+    </ProtectedRoute>
+                     }
+        
+  />
 
         {/* Student */}
         <Route
@@ -99,6 +110,7 @@ const Layout = () => {
             </ProtectedRoute>
           }
         />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );

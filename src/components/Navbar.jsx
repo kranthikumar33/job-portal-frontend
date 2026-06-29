@@ -20,7 +20,6 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between sticky top-0 z-50">
-
       {/* Logo */}
       <Link to="/" className="text-xl font-bold text-blue-600 tracking-tight">
         Job<span className="text-gray-900">Portal</span>
@@ -28,21 +27,31 @@ const Navbar = () => {
 
       {/* Middle Links */}
       <div className="flex items-center gap-6 text-sm font-medium">
-
         {/* Guest */}
         {!user && (
           <>
-            <Link to="/" className={linkClass("/")}>Home</Link>
-            <Link to="/jobs" className={linkClass("/jobs")}>Jobs</Link>
+            <Link to="/" className={linkClass("/")}>
+              Home
+            </Link>
+            <Link to="/jobs" className={linkClass("/jobs")}>
+              Jobs
+            </Link>
           </>
         )}
 
         {/* Student */}
         {user?.role === "student" && (
           <>
-            <Link to="/" className={linkClass("/")}>Home</Link>
-            <Link to="/jobs" className={linkClass("/jobs")}>Jobs</Link>
-            <Link to="/student/applications" className={linkClass("/student/applications")}>
+            <Link to="/" className={linkClass("/")}>
+              Home
+            </Link>
+            <Link to="/jobs" className={linkClass("/jobs")}>
+              Jobs
+            </Link>
+            <Link
+              to="/student/applications"
+              className={linkClass("/student/applications")}
+            >
               My Applications
             </Link>
           </>
@@ -51,7 +60,10 @@ const Navbar = () => {
         {/* Recruiter */}
         {user?.role === "recruiter" && (
           <>
-            <Link to="/recruiter/companies" className={linkClass("/recruiter/companies")}>
+            <Link
+              to="/recruiter/companies"
+              className={linkClass("/recruiter/companies")}
+            >
               Companies
             </Link>
             <Link to="/recruiter/jobs" className={linkClass("/recruiter/jobs")}>
@@ -81,12 +93,17 @@ const Navbar = () => {
         ) : (
           <>
             {/* Avatar + name */}
-            <div className="flex items-center gap-2">
+            <Link
+              to="/profile"
+              className="flex items-center gap-2 hover:opacity-80 transition"
+            >
               <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-sm">
                 {user.fullname?.charAt(0).toUpperCase()}
               </div>
-              <span className="text-sm font-medium text-gray-700">{user.fullname}</span>
-            </div>
+              <span className="text-sm font-medium text-gray-700">
+                {user.fullname}
+              </span>
+            </Link>
 
             <button
               onClick={handleLogout}
