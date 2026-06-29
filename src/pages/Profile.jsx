@@ -4,7 +4,7 @@ import API from "../api/axios";
 
 const Profile = () => {
   const { user, setUser } = useAuth();
-
+  const [resumeFile, setResumeFile] = useState(null);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState(null);
@@ -27,18 +27,32 @@ const Profile = () => {
   };
 
   const handleSave = async () => {
-    setSaving(true);
-    try {
-      const res = await API.post("/users/profile/update", form);
-      setUser(res.data.user);
-      setEditing(false);
-      showToast("Profile updated successfully!");
-    } catch (err) {
-      showToast(err.response?.data?.message || "Update failed. Try again.", "error");
-    } finally {
-      setSaving(false);
+  setSaving(true);
+  try {
+    const formData = new FormData();
+    formData.append("fullname", form.fullname);
+    formData.append("email", form.email);
+    formData.append("phoneNumber", form.phoneNumber);
+    formData.append("bio", form.bio);
+    formData.append("skills", form.skills);
+    if (resumeFile) {
+      formData.append("resume", resumeFile);
     }
-  };
+
+    const res = await API.post("/users/profile/update", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    console.log("updated user:", res.data.user);
+    setUser(res.data.user);
+    setResumeFile(null);
+    setEditing(false);
+    showToast("Profile updated successfully!");
+  } catch (err) {
+    showToast(err.response?.data?.message || "Update failed. Try again.", "error");
+  } finally {
+    setSaving(false);
+  }
+};
 
   const handleCancel = () => {
     setForm({
@@ -192,6 +206,51 @@ const Profile = () => {
             </div>
           </div>
         </div>
+        
+        {/* Resume — students only */}
+{user?.role === "student" && (
+  <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-5">
+    <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-5">
+      Resume
+    </h2>
+
+    {user?.profile?.resume ? (
+  <div className="mb-4">
+    <p className="text-xs text-gray-400 mb-1">Current Resume</p>
+    
+     <a  href={`https://docs.google.com/viewer?url=${encodeURIComponent(user.profile.resume)}&embedded=true`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-sm font-medium text-blue-600 hover:underline"
+    >
+      📄 {user.profile.resumeOriginalName || "View Resume"}
+    </a>
+  </div>
+) : (
+  <p className="text-sm text-gray-300 italic mb-4">No resume uploaded yet</p>
+)}
+
+    {editing && (
+      <div>
+        <label className="text-xs font-medium text-gray-400 uppercase tracking-wide block mb-1.5">
+          Upload New Resume (PDF only)
+        </label>
+        <input
+          type="file"
+          accept=".pdf"
+          onChange={(e) => setResumeFile(e.target.files[0])}
+          className="text-sm text-gray-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+        />
+        {resumeFile && (
+          <p className="text-xs text-gray-400 mt-1.5">Selected: {resumeFile.name}</p>
+        )}
+      </div>
+    )}
+  </div>
+)}
+
+
+
 
         {/* Save / Cancel buttons */}
         {editing && (
