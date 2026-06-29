@@ -79,6 +79,22 @@ const Layout = () => {
           }
         />
         <Route
+          path="/recruiter/jobs"
+          element={
+            <ProtectedRoute allowedRole="recruiter">
+              <MyJobs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/recruiter/jobs/post"
+          element={
+            <ProtectedRoute allowedRole="recruiter">
+              <PostJob />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/recruiter/jobs/:id/applicants"
           element={
             <ProtectedRoute allowedRole="recruiter">
@@ -102,23 +118,6 @@ const Layout = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/recruiter/jobs/post"
-          element={
-            <ProtectedRoute allowedRole="recruiter">
-              <PostJob />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/recruiter/dashboard"
-          element={
-            <ProtectedRoute allowedRole="recruiter">
-              <div className="p-8 text-xl font-bold">Recruiter Dashboard</div>
-            </ProtectedRoute>
-          }
-        />
-        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );
