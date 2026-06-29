@@ -28,6 +28,16 @@ const MyJobs = () => {
       year: "numeric",
     });
 
+  const handleDelete = async (jobId) => {
+    if (!window.confirm("Are you sure you want to delete this job?")) return;
+    try {
+      await API.delete(`/job/delete/${jobId}`);
+      setJobs((prev) => prev.filter((j) => j._id !== jobId));
+    } catch {
+      alert("Failed to delete job. Try again.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 px-6 py-10 max-w-5xl mx-auto">
       {/* Header */}
@@ -57,7 +67,9 @@ const MyJobs = () => {
       {!loading && jobs.length === 0 && (
         <div className="text-center py-24">
           <p className="text-4xl mb-4">📋</p>
-          <h2 className="text-base font-semibold text-gray-700">No jobs posted yet</h2>
+          <h2 className="text-base font-semibold text-gray-700">
+            No jobs posted yet
+          </h2>
           <p className="text-sm text-gray-400 mt-1 mb-5">
             Post your first job to start receiving applications.
           </p>
@@ -86,11 +98,16 @@ const MyJobs = () => {
             </thead>
             <tbody className="divide-y divide-gray-50">
               {jobs.map((job) => (
-                <tr key={job._id} className="hover:bg-gray-50 transition-colors">
+                <tr
+                  key={job._id}
+                  className="hover:bg-gray-50 transition-colors"
+                >
                   {/* Role */}
                   <td className="px-6 py-4">
                     <p className="font-medium text-gray-900">{job.title}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">📍 {job.location}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      📍 {job.location}
+                    </p>
                   </td>
 
                   {/* Company */}
@@ -99,7 +116,9 @@ const MyJobs = () => {
                       <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center text-xs font-bold text-blue-600">
                         {job.company?.name?.[0]?.toUpperCase() || "?"}
                       </div>
-                      <span className="text-gray-700">{job.company?.name || "—"}</span>
+                      <span className="text-gray-700">
+                        {job.company?.name || "—"}
+                      </span>
                     </div>
                   </td>
 
@@ -125,12 +144,22 @@ const MyJobs = () => {
 
                   {/* Action */}
                   <td className="px-6 py-4 text-right">
-                    <button
-                      onClick={() => navigate(`/recruiter/jobs/${job._id}/applicants`)}
-                      className="text-xs font-semibold text-blue-600 hover:text-blue-800 border border-blue-200 hover:border-blue-400 px-3 py-1.5 rounded-lg transition-colors"
-                    >
-                      View Applicants →
-                    </button>
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={() =>
+                          navigate(`/recruiter/jobs/${job._id}/applicants`)
+                        }
+                        className="text-xs font-semibold text-blue-600 hover:text-blue-800 border border-blue-200 hover:border-blue-400 px-3 py-1.5 rounded-lg transition-colors"
+                      >
+                        Applicants →
+                      </button>
+                      <button
+                        onClick={() => handleDelete(job._id)}
+                        className="text-xs font-semibold text-red-500 hover:text-red-700 border border-red-200 hover:border-red-400 px-3 py-1.5 rounded-lg transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -142,9 +171,12 @@ const MyJobs = () => {
       {/* Summary */}
       {!loading && jobs.length > 0 && (
         <div className="mt-5 flex gap-6 text-sm text-gray-400">
-          <span>{jobs.length} job{jobs.length !== 1 ? "s" : ""} posted</span>
           <span>
-            {jobs.reduce((acc, j) => acc + (j.applications?.length ?? 0), 0)} total applicants
+            {jobs.length} job{jobs.length !== 1 ? "s" : ""} posted
+          </span>
+          <span>
+            {jobs.reduce((acc, j) => acc + (j.applications?.length ?? 0), 0)}{" "}
+            total applicants
           </span>
         </div>
       )}

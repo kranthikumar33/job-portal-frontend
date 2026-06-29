@@ -34,14 +34,22 @@ const Layout = () => {
         <Route path="/jobs/:id" element={<JobDetail />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<Terms />} />
-        <Route path="/recruiter/companies/edit/:id" element={<ProtectedRoute><EditCompany /></ProtectedRoute>} />
-        <Route path="/profile" element={
-    <ProtectedRoute>
-      <Profile />
-    </ProtectedRoute>
-                     }
-        
-  />
+        <Route
+          path="/recruiter/companies/edit/:id"
+          element={
+            <ProtectedRoute>
+              <EditCompany />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Student */}
         <Route
@@ -56,14 +64,14 @@ const Layout = () => {
           path="/student/dashboard"
           element={
             <ProtectedRoute allowedRole="student">
-              <div className="p-8 text-xl font-bold">Student Dashboard</div>
+              <Jobs />
             </ProtectedRoute>
           }
         />
 
         {/* Recruiter */}
         <Route
-          path="/recruiter/jobs"
+          path="/recruiter/dashboard"
           element={
             <ProtectedRoute allowedRole="recruiter">
               <MyJobs />
