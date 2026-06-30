@@ -17,6 +17,7 @@ import Terms from "./pages/Terms";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import EditCompany from "./pages/recruiter/EditCompany";
+import EditJob from "./pages/recruiter/EditJob";
 
 const Layout = () => {
   const location = useLocation();
@@ -115,6 +116,14 @@ const Layout = () => {
           element={
             <ProtectedRoute allowedRole="recruiter">
               <RegisterCompany />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/recruiter/jobs/:id/edit"
+          element={
+            <ProtectedRoute allowedRole="recruiter">
+              <EditJob />
             </ProtectedRoute>
           }
         />

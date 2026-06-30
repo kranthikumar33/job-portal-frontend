@@ -104,7 +104,12 @@ const MyJobs = () => {
                 >
                   {/* Role */}
                   <td className="px-6 py-4">
-                    <p className="font-medium text-gray-900">{job.title}</p>
+                    <button
+                      onClick={() => navigate(`/jobs/${job._id}`)}
+                      className="font-medium text-gray-900 hover:text-blue-600 transition-colors text-left"
+                    >
+                      {job.title}
+                    </button>
                     <p className="text-xs text-gray-400 mt-0.5">
                       📍 {job.location}
                     </p>
@@ -158,6 +163,14 @@ const MyJobs = () => {
                         className="text-xs font-semibold text-red-500 hover:text-red-700 border border-red-200 hover:border-red-400 px-3 py-1.5 rounded-lg transition-colors"
                       >
                         Delete
+                      </button>
+                      <button
+                        onClick={() =>
+                          navigate(`/recruiter/jobs/${job._id}/edit`)
+                        }
+                        className="text-xs font-semibold text-gray-600 hover:text-gray-900 border border-gray-200 hover:border-gray-400 px-3 py-1.5 rounded-lg transition-colors"
+                      >
+                        Edit
                       </button>
                     </div>
                   </td>
