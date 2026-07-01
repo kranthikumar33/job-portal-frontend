@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Search } from "lucide-react";
 
 const CATEGORIES = [
   { label: "Engineering", icon: "⚙️" },
@@ -48,7 +49,6 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-white">
-
       {/* ── Hero ── */}
       <section className="bg-gradient-to-br from-blue-600 to-blue-800 text-white px-6 py-24 text-center">
         <p className="text-blue-200 text-sm font-medium tracking-widest uppercase mb-4">
@@ -64,25 +64,26 @@ const Home = () => {
         </p>
 
         {/* Search bar */}
-        <form
-          onSubmit={handleSearch}
-          className="mt-10 flex items-center gap-3 max-w-xl mx-auto bg-white rounded-xl p-2 shadow-lg"
-        >
-          <input
-            type="text"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            placeholder="Job title, skill, or keyword..."
-            className="flex-1 px-4 py-2 text-sm text-gray-800 bg-transparent outline-none placeholder-gray-400"
-          />
-          <button
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors shrink-0"
-          >
-            Search Jobs
-          </button>
-        </form>
+        <form onSubmit={handleSearch} className="mt-10 max-w-2xl mx-auto">
+          <div className="flex items-center bg-white rounded-full shadow-xl overflow-hidden">
+            <Search className="ml-5 text-gray-400" size={20} />
 
+            <input
+              type="text"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              placeholder="Job title, skill, or keyword..."
+              className="flex-1 px-3 py-4 text-gray-800 placeholder-gray-400 outline-none bg-transparent"
+            />
+
+            <button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-full m-1 transition-colors"
+            >
+              Search Jobs
+            </button>
+          </div>
+        </form>
         {!user && (
           <div className="mt-6 flex items-center justify-center gap-4 text-sm">
             <button
@@ -123,7 +124,9 @@ const Home = () => {
       {/* ── Categories ── */}
       <section className="px-6 py-20 max-w-5xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-2xl font-bold text-gray-900">Browse by Category</h2>
+          <h2 className="text-2xl font-bold text-gray-900">
+            Browse by Category
+          </h2>
           <p className="text-gray-400 text-sm mt-2">
             Explore roles across the industries hiring right now
           </p>
@@ -162,7 +165,9 @@ const Home = () => {
                 <h3 className="text-base font-semibold text-gray-900 mb-2">
                   {item.title}
                 </h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  {item.desc}
+                </p>
               </div>
             ))}
           </div>
@@ -204,13 +209,19 @@ const Home = () => {
             © {new Date().getFullYear()} JobPortal. Built with React & Node.js.
           </p>
           <div className="flex items-center gap-6 text-xs text-gray-400">
-            <Link to="/privacy-policy" className="hover:text-blue-600 transition-colors">
+            <Link
+              to="/privacy-policy"
+              className="hover:text-blue-600 transition-colors"
+            >
               Privacy Policy
             </Link>
             <Link to="/terms" className="hover:text-blue-600 transition-colors">
               Terms & Conditions
             </Link>
-            <a href="mailto:support@jobportal.dev" className="hover:text-blue-600 transition-colors">
+            <a
+              href="mailto:support@jobportal.dev"
+              className="hover:text-blue-600 transition-colors"
+            >
               Contact
             </a>
           </div>
