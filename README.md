@@ -9,12 +9,12 @@ A full-stack job portal web application built with **React + Vite**, enabling st
 
 ## 🖼️ Screenshots
 
-<!-- Add screenshots here after replacing the paths -->
+
 ![Landing Page](./screenshots/landing.png)
 ![Job Listings](./screenshots/jobs.png) 
 ![Recruiter Dashboard](./screenshots/recruiter.png)
+![Job Detail](./screenshots/job-detail.png)
 
-> _Add screenshots of: Landing Page · Job Listings · Job Detail · Recruiter Dashboard_
 
 ---
 
