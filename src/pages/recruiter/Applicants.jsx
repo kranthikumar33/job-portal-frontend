@@ -145,106 +145,178 @@ const Applicants = () => {
         </div>
       )}
 
-      {/* Applicants Table */}
+      {/* Applicants — table on sm+, cards on mobile */}
       {!loading && applicants.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-100 bg-gray-50 text-xs font-semibold text-gray-400 uppercase tracking-wide">
-                <th className="text-left px-6 py-4">Applicant</th>
-                <th className="text-left px-6 py-4">Contact</th>
-                <th className="text-left px-6 py-4">Applied On</th>
-                <th className="text-left px-6 py-4">Status</th>
-                <th className="text-center px-6 py-4">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {applicants.map((app) => {
-                const applicant = app.applicant;
-                const status = app.status || "pending";
-                const colors = statusColors[status] || statusColors.pending;
-                const isUpdating = updating === app._id;
+        <>
+          {/* Desktop / tablet table */}
+          <div className="hidden sm:block bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-100 bg-gray-50 text-xs font-semibold text-gray-400 uppercase tracking-wide">
+                  <th className="text-left px-6 py-4">Applicant</th>
+                  <th className="text-left px-6 py-4">Contact</th>
+                  <th className="text-left px-6 py-4">Applied On</th>
+                  <th className="text-left px-6 py-4">Status</th>
+                  <th className="text-center px-6 py-4">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {applicants.map((app) => {
+                  const applicant = app.applicant;
+                  const status = app.status || "pending";
+                  const colors = statusColors[status] || statusColors.pending;
+                  const isUpdating = updating === app._id;
 
-                return (
-                  <tr key={app._id} className="hover:bg-gray-50 transition-colors">
-                    {/* Name + avatar */}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-sm font-bold text-blue-700 shrink-0">
-                          {applicant?.fullname?.[0]?.toUpperCase() || "?"}
+                  return (
+                    <tr key={app._id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-sm font-bold text-blue-700 shrink-0">
+                            {applicant?.fullname?.[0]?.toUpperCase() || "?"}
+                          </div>
+                          <div>
+                            <p className="font-medium text-gray-900">
+                              {applicant?.fullname || "Unknown"}
+                            </p>
+                            <p className="text-xs text-gray-400 capitalize">
+                              {applicant?.role || "student"}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium text-gray-900">
-                            {applicant?.fullname || "Unknown"}
+                      </td>
+
+                      <td className="px-6 py-4">
+                        <p className="text-gray-600">{applicant?.email || "—"}</p>
+                        {applicant?.phoneNumber && (
+                          <p className="text-xs text-gray-400 mt-0.5">
+                            {applicant.phoneNumber}
                           </p>
-                          <p className="text-xs text-gray-400 capitalize">
-                            {applicant?.role || "student"}
-                          </p>
+                        )}
+                      </td>
+
+                      <td className="px-6 py-4 text-gray-400 text-xs">
+                        {new Date(app.createdAt).toLocaleDateString("en-IN", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </td>
+
+                      <td className="px-6 py-4">
+                        <span
+                          className={`inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full border ${colors.bg} ${colors.text} ${colors.border}`}
+                        >
+                          {status.charAt(0).toUpperCase() + status.slice(1)}
+                        </span>
+                      </td>
+
+                      <td className="px-6 py-4">
+                        <div className="flex items-center justify-center gap-2">
+                          {status === "accepted" ? (
+                            <span className="text-xs text-green-600 font-medium">✓ Accepted</span>
+                          ) : status === "rejected" ? (
+                            <span className="text-xs text-red-500 font-medium">✗ Rejected</span>
+                          ) : (
+                            <>
+                              <button
+                                disabled={isUpdating}
+                                onClick={() => handleStatus(app._id, "accepted")}
+                                className="text-xs font-semibold text-green-700 bg-green-50 hover:bg-green-100 border border-green-200 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+                              >
+                                {isUpdating ? "..." : "Accept"}
+                              </button>
+                              <button
+                                disabled={isUpdating}
+                                onClick={() => handleStatus(app._id, "rejected")}
+                                className="text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+                              >
+                                {isUpdating ? "..." : "Reject"}
+                              </button>
+                            </>
+                          )}
                         </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile cards */}
+          <div className="sm:hidden space-y-3">
+            {applicants.map((app) => {
+              const applicant = app.applicant;
+              const status = app.status || "pending";
+              const colors = statusColors[status] || statusColors.pending;
+              const isUpdating = updating === app._id;
+
+              return (
+                <div
+                  key={app._id}
+                  className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-sm font-bold text-blue-700 shrink-0">
+                        {applicant?.fullname?.[0]?.toUpperCase() || "?"}
                       </div>
-                    </td>
-
-                    {/* Contact */}
-                    <td className="px-6 py-4">
-                      <p className="text-gray-600">{applicant?.email || "—"}</p>
-                      {applicant?.phoneNumber && (
-                        <p className="text-xs text-gray-400 mt-0.5">
-                          {applicant.phoneNumber}
+                      <div className="min-w-0">
+                        <p className="font-medium text-gray-900 truncate">
+                          {applicant?.fullname || "Unknown"}
                         </p>
-                      )}
-                    </td>
+                        <p className="text-xs text-gray-400 capitalize">
+                          {applicant?.role || "student"}
+                        </p>
+                      </div>
+                    </div>
+                    <span
+                      className={`shrink-0 inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full border ${colors.bg} ${colors.text} ${colors.border}`}
+                    >
+                      {status.charAt(0).toUpperCase() + status.slice(1)}
+                    </span>
+                  </div>
 
-                    {/* Date */}
-                    <td className="px-6 py-4 text-gray-400 text-xs">
+                  <div className="mt-3 text-xs text-gray-500 space-y-0.5">
+                    <p className="truncate">{applicant?.email || "—"}</p>
+                    {applicant?.phoneNumber && <p>{applicant.phoneNumber}</p>}
+                    <p className="text-gray-400">
+                      Applied{" "}
                       {new Date(app.createdAt).toLocaleDateString("en-IN", {
                         day: "numeric",
                         month: "short",
                         year: "numeric",
                       })}
-                    </td>
+                    </p>
+                  </div>
 
-                    {/* Status badge */}
-                    <td className="px-6 py-4">
-                      <span
-                        className={`inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full border ${colors.bg} ${colors.text} ${colors.border}`}
+                  {status === "accepted" ? (
+                    <p className="mt-3 text-xs text-green-600 font-medium">✓ Accepted</p>
+                  ) : status === "rejected" ? (
+                    <p className="mt-3 text-xs text-red-500 font-medium">✗ Rejected</p>
+                  ) : (
+                    <div className="mt-3 flex gap-2">
+                      <button
+                        disabled={isUpdating}
+                        onClick={() => handleStatus(app._id, "accepted")}
+                        className="flex-1 text-xs font-semibold text-green-700 bg-green-50 hover:bg-green-100 border border-green-200 px-3 py-2 rounded-lg transition-colors disabled:opacity-50"
                       >
-                        {status.charAt(0).toUpperCase() + status.slice(1)}
-                      </span>
-                    </td>
-
-                    {/* Accept / Reject buttons */}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-center gap-2">
-                        {status === "accepted" ? (
-                          <span className="text-xs text-green-600 font-medium">✓ Accepted</span>
-                        ) : status === "rejected" ? (
-                          <span className="text-xs text-red-500 font-medium">✗ Rejected</span>
-                        ) : (
-                          <>
-                            <button
-                              disabled={isUpdating}
-                              onClick={() => handleStatus(app._id, "accepted")}
-                              className="text-xs font-semibold text-green-700 bg-green-50 hover:bg-green-100 border border-green-200 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
-                            >
-                              {isUpdating ? "..." : "Accept"}
-                            </button>
-                            <button
-                              disabled={isUpdating}
-                              onClick={() => handleStatus(app._id, "rejected")}
-                              className="text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
-                            >
-                              {isUpdating ? "..." : "Reject"}
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                        {isUpdating ? "..." : "Accept"}
+                      </button>
+                      <button
+                        disabled={isUpdating}
+                        onClick={() => handleStatus(app._id, "rejected")}
+                        className="flex-1 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 px-3 py-2 rounded-lg transition-colors disabled:opacity-50"
+                      >
+                        {isUpdating ? "..." : "Reject"}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </>
       )}
     </div>
   );
