@@ -64,25 +64,23 @@ const Home = () => {
         </p>
 
         {/* Search bar */}
-        <form onSubmit={handleSearch} className="mt-10 max-w-2xl mx-auto">
-          <div className="flex items-center bg-white rounded-full shadow-xl overflow-hidden">
-            <Search className="ml-5 text-gray-400" size={20} />
-
-            <input
-              type="text"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              placeholder="Job title, skill, or keyword..."
-              className="flex-1 px-3 py-4 text-gray-800 placeholder-gray-400 outline-none bg-transparent"
-            />
-
-            <button
-              type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-full m-1 transition-colors"
-            >
-              Search Jobs
-            </button>
-          </div>
+        <form
+          onSubmit={handleSearch}
+          className="mt-10 max-w-xl mx-auto bg-white rounded-2xl p-2 shadow-lg flex flex-col gap-2 sm:flex-row sm:items-center"
+        >
+          <input
+            type="text"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            placeholder="Job title, skill, or keyword..."
+            className="w-full flex-1 px-4 py-3 text-sm text-gray-800 bg-transparent outline-none placeholder-gray-400 rounded-xl"
+          />
+          <button
+            type="submit"
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-3 rounded-xl transition-colors"
+          >
+            Search Jobs
+          </button>
         </form>
         {!user && (
           <div className="mt-6 flex items-center justify-center gap-4 text-sm">
