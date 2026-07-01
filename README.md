@@ -57,16 +57,28 @@ A full-stack job portal web application built with **React + Vite**, enabling st
 
 ```
 src/
+├── api/
+│   └── axios.js              # Axios instance with base URL
+├── assets/                   # Images and static files
 ├── components/
-│   ├── shared/          # Navbar, Footer, ProtectedRoute
-│   ├── auth/            # Login, Register
-│   ├── student/         # Jobs, JobDetail, AppliedJobs
-│   └── recruiter/       # PostJob, EditJob, Applicants, CompanySetup
+│   ├── Navbar.jsx
+│   └── ProtectedRoute.jsx
 ├── context/
-│   └── AuthContext.jsx  # Global auth state with React Context
-├── hooks/               # Custom hooks
-├── utils/               # Axios instance, helpers
-└── App.jsx              # Routes with role-based protection
+│   └── AuthContext.jsx       # Global auth state with React Context
+├── pages/
+│   ├── recruiter/            # PostJob, EditJob, Applicants, CompanySetup
+│   ├── student/              # Jobs, JobDetail, AppliedJobs
+│   ├── Home.jsx
+│   ├── JobDetail.jsx
+│   ├── Jobs.jsx
+│   ├── Login.jsx
+│   ├── NotFound.jsx
+│   ├── PrivacyPolicy.jsx
+│   ├── Profile.jsx
+│   ├── Signup.jsx
+│   └── Terms.jsx
+├── App.jsx                   # Routes with role-based protection
+└── main.jsx
 ```
 
 ---
